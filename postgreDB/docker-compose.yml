@@ -1,0 +1,15 @@
+# canonical configuration
+version: "3.7"
+
+services:
+    postgresqldb:
+        container_name: local_postgredb_${ENVTYPE}
+        image: postgres:12
+        networks:
+            - localpostgredb-nw
+networks:
+    localpostgredb-nw:
+        name: localpostgredb-nw
+
+        
+  
