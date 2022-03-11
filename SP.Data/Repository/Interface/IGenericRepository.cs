@@ -12,18 +12,16 @@ namespace SP.Data.Repository.Interface
     public interface IGenericRepository<T> where T : class
     {
         IQueryable<T> GetAll();
-
-        IQueryable<T> GetBy(Expression<Func<T, bool>> predicate);
-
         void Add(T entity);
 
         void Update(T entity);
         void Remove(T entity);
 
-        void SaveChanges();
+        IEnumerable<T> Find(Expression<Func<T, bool>> filter = null, Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null, params Expression<Func<T, object>>[] includes);
+
 
         #region async repository method 
-
+        //implement by yourself if needed
         #endregion
     }
 }

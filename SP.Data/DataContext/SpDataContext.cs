@@ -29,6 +29,7 @@ namespace SP.Data.DataContext
             {
                 optionsBuilder.UseNpgsql("Name=ConnectionStrings:SpConnectionString");
             }
+            optionsBuilder.EnableSensitiveDataLogging();//for debugging only
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -37,7 +38,7 @@ namespace SP.Data.DataContext
 
             modelBuilder.Entity<Car>(entity =>
             {
-                entity.ToTable("car");
+                entity.ToTable("car", "sp");
 
                 entity.HasIndex(e => e.PersonId)
                     .HasName("car_person_id_key")
@@ -64,7 +65,7 @@ namespace SP.Data.DataContext
 
             modelBuilder.Entity<Person>(entity =>
             {
-                entity.ToTable("person");
+                entity.ToTable("person", "sp");
 
                 entity.Property(e => e.Id)
                     .HasColumnName("id")

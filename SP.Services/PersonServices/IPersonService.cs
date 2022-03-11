@@ -5,7 +5,12 @@ namespace SP.Services.PersonServices
 {
     public interface IPersonService
     {
-       List<PersonDTO> GetAll();
+       List<PersonDTO> GetAllWithDbContext();
+
+       List<PersonDTO> GetAllWithGeneralRepo();
+
+       List<PersonDTO> GetAllWithCustomRepo();
+
          
     }
 }

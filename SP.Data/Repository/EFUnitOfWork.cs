@@ -1,27 +1,38 @@
 using System;
 using System.Collections;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using SP.Data.DataContext;
+using SP.Data.Models;
 using SP.Data.Repository.Interface;
 
 namespace SP.Data.Repository
 {
-    public class EFUnitOfWork : IUnitOfWork
+    public class EFUnitOfWork<TContext> : IUnitOfWork<TContext>, IDisposable where TContext : DbContext, new()
     {
-        private readonly SpDataContext _context;
+        private readonly TContext _context;
 
         private bool _disposed;
         private Hashtable _repositories;
+        private IServiceScopeFactory _serviceScopeFactory;
 
-        public EFUnitOfWork(SpDataContext context)
+
+        public EFUnitOfWork(TContext context, IServiceScopeFactory serviceScopeFactory)
         {
-            _context=context;
+            _context = context;
+            _serviceScopeFactory=serviceScopeFactory;
+        }
+
+        public TContext Context
+        {
+            get { return _context; }
         }
 
         public void SaveChanges()
         {
             _context.SaveChanges();
         }
+
 
         public void Dispose()
         {
@@ -54,10 +65,10 @@ namespace SP.Data.Repository
             {
                 var repositoryType = typeof(GenericRepository<>);
 
-                var repositoryInstance = Activator.CreateInstance(repositoryType.MakeGenericType(typeof(T)),_context);
-
+                var repositoryInstance = Activator.CreateInstance(repositoryType.MakeGenericType(typeof(T)), _context);
                 _repositories.Add(type, repositoryInstance);
             }
+            //todo: try register  service to container?
 
             return (IGenericRepository<T>)_repositories[type];
         }
